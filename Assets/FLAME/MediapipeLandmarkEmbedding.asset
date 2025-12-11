@@ -1,0 +1,331 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20d56bfec4249de448b877a1619b5823, type: 3}
+  m_Name: MediapipeLandmarkEmbedding
+  m_EditorClassIdentifier: Assembly-CSharp::AlSo.FlameLandmarkEmbedding
+  NumLandmarks: 105
+  Landmarks:
+  - FaceIndex: 6431
+    LandmarkIndex: 276
+    Barycentric: {x: 0.72472864, y: 0.025990749, z: 0.24928063}
+  - FaceIndex: 5107
+    LandmarkIndex: 282
+    Barycentric: {x: 0.0080278795, y: 0.8548502, z: 0.13712193}
+  - FaceIndex: 391
+    LandmarkIndex: 283
+    Barycentric: {x: 0.49934673, y: 0.0992007, z: 0.40145257}
+  - FaceIndex: 1321
+    LandmarkIndex: 285
+    Barycentric: {x: 0.15105878, y: 0.8183246, z: 0.030616589}
+  - FaceIndex: 3831
+    LandmarkIndex: 293
+    Barycentric: {x: 0.9319169, y: 0.0053026653, z: 0.062780425}
+  - FaceIndex: 1347
+    LandmarkIndex: 295
+    Barycentric: {x: 0.6086805, y: 0.3497412, z: 0.041578326}
+  - FaceIndex: 3845
+    LandmarkIndex: 296
+    Barycentric: {x: 0.016358774, y: 0.4430867, z: 0.5405545}
+  - FaceIndex: 6434
+    LandmarkIndex: 300
+    Barycentric: {x: 0.06083316, y: 0.31350684, z: 0.62566}
+  - FaceIndex: 3
+    LandmarkIndex: 334
+    Barycentric: {x: 0.678358, y: 0.18575141, z: 0.13589056}
+  - FaceIndex: 6592
+    LandmarkIndex: 336
+    Barycentric: {x: 0.21258205, y: 0.41796154, z: 0.3694564}
+  - FaceIndex: 2873
+    LandmarkIndex: 46
+    Barycentric: {x: 0.72472864, y: 0.24928063, z: 0.025990749}
+  - FaceIndex: 225
+    LandmarkIndex: 52
+    Barycentric: {x: 0.0080278795, y: 0.13712193, z: 0.8548502}
+  - FaceIndex: 1802
+    LandmarkIndex: 53
+    Barycentric: {x: 0.0992007, y: 0.49934673, z: 0.40145257}
+  - FaceIndex: 8834
+    LandmarkIndex: 55
+    Barycentric: {x: 0.15105878, y: 0.030616589, z: 0.8183246}
+  - FaceIndex: 8832
+    LandmarkIndex: 63
+    Barycentric: {x: 0.9319169, y: 0.062780425, z: 0.0053026653}
+  - FaceIndex: 8775
+    LandmarkIndex: 65
+    Barycentric: {x: 0.6086805, y: 0.041578326, z: 0.3497412}
+  - FaceIndex: 3779
+    LandmarkIndex: 66
+    Barycentric: {x: 0.4430867, y: 0.016358774, z: 0.5405545}
+  - FaceIndex: 2874
+    LandmarkIndex: 70
+    Barycentric: {x: 0.06083316, y: 0.62566, z: 0.31350684}
+  - FaceIndex: 5325
+    LandmarkIndex: 105
+    Barycentric: {x: 0.678358, y: 0.13589056, z: 0.18575141}
+  - FaceIndex: 7915
+    LandmarkIndex: 107
+    Barycentric: {x: 0.3694564, y: 0.41796154, z: 0.21258205}
+  - FaceIndex: 5295
+    LandmarkIndex: 249
+    Barycentric: {x: 3.7747583e-15, y: 0.4231269, z: 0.5768731}
+  - FaceIndex: 269
+    LandmarkIndex: 263
+    Barycentric: {x: 0.21039939, y: 8.11837e-16, z: 0.7896006}
+  - FaceIndex: 5428
+    LandmarkIndex: 362
+    Barycentric: {x: 0.37716383, y: 0.38716757, z: 0.23566861}
+  - FaceIndex: 6181
+    LandmarkIndex: 373
+    Barycentric: {x: 0.17046341, y: 0.8181572, z: 0.011379374}
+  - FaceIndex: 2212
+    LandmarkIndex: 374
+    Barycentric: {x: 0.036472753, y: 0.3100922, z: 0.65343505}
+  - FaceIndex: 5739
+    LandmarkIndex: 380
+    Barycentric: {x: 0.5825512, y: 0.15548584, z: 0.26196295}
+  - FaceIndex: 5412
+    LandmarkIndex: 381
+    Barycentric: {x: 0.6459486, y: 0.141751, z: 0.2123004}
+  - FaceIndex: 338
+    LandmarkIndex: 382
+    Barycentric: {x: 0.2962545, y: 0.0894481, z: 0.61429745}
+  - FaceIndex: 302
+    LandmarkIndex: 384
+    Barycentric: {x: 3.663736e-15, y: 0.83864784, z: 0.16135214}
+  - FaceIndex: 8231
+    LandmarkIndex: 385
+    Barycentric: {x: 2.7755576e-15, y: 0.7441139, z: 0.2558861}
+  - FaceIndex: 307
+    LandmarkIndex: 386
+    Barycentric: {x: 0.48671862, y: 2.1254505e-15, z: 0.5132814}
+  - FaceIndex: 276
+    LandmarkIndex: 387
+    Barycentric: {x: -1.3322676e-15, y: 0.22381063, z: 0.7761894}
+  - FaceIndex: 274
+    LandmarkIndex: 388
+    Barycentric: {x: 4.440892e-16, y: 0.6203232, z: 0.37967685}
+  - FaceIndex: 1516
+    LandmarkIndex: 390
+    Barycentric: {x: 4.718448e-15, y: 0.7078295, z: 0.2921705}
+  - FaceIndex: 5417
+    LandmarkIndex: 398
+    Barycentric: {x: 0.45996204, y: 0.54003793, z: 1.8312507e-15}
+  - FaceIndex: 5373
+    LandmarkIndex: 466
+    Barycentric: {x: 0.88256353, y: 0.11743644, z: 1.15111015e-14}
+  - FaceIndex: 6647
+    LandmarkIndex: 7
+    Barycentric: {x: 0.5768731, y: 0.4231269, z: 2.8385817e-15}
+  - FaceIndex: 6766
+    LandmarkIndex: 33
+    Barycentric: {x: 0.21039939, y: 0.7896006, z: 8.11837e-16}
+  - FaceIndex: 6831
+    LandmarkIndex: 133
+    Barycentric: {x: 0.23566861, y: 0.38716757, z: 0.37716383}
+  - FaceIndex: 6700
+    LandmarkIndex: 144
+    Barycentric: {x: 0.011379374, y: 0.8181572, z: 0.17046341}
+  - FaceIndex: 6656
+    LandmarkIndex: 145
+    Barycentric: {x: 0.036472753, y: 0.65343505, z: 0.3100922}
+  - FaceIndex: 1582
+    LandmarkIndex: 153
+    Barycentric: {x: 0.5825512, y: 0.26196295, z: 0.15548584}
+  - FaceIndex: 1736
+    LandmarkIndex: 154
+    Barycentric: {x: 0.6459486, y: 0.2123004, z: 0.141751}
+  - FaceIndex: 1764
+    LandmarkIndex: 155
+    Barycentric: {x: 0.0894481, y: 0.2962545, z: 0.61429745}
+  - FaceIndex: 6801
+    LandmarkIndex: 157
+    Barycentric: {x: 3.663736e-15, y: 0.16135214, z: 0.83864784}
+  - FaceIndex: 3729
+    LandmarkIndex: 158
+    Barycentric: {x: 2.7755576e-15, y: 0.2558861, z: 0.7441139}
+  - FaceIndex: 6804
+    LandmarkIndex: 159
+    Barycentric: {x: 0.48671862, y: 0.5132814, z: 2.879697e-15}
+  - FaceIndex: 6775
+    LandmarkIndex: 160
+    Barycentric: {x: 1.9984014e-15, y: 0.22381063, z: 0.7761894}
+  - FaceIndex: 1698
+    LandmarkIndex: 161
+    Barycentric: {x: 0.6203232, y: 4.727214e-16, z: 0.37967685}
+  - FaceIndex: 1626
+    LandmarkIndex: 163
+    Barycentric: {x: 0.7078295, y: 4.874867e-15, z: 0.2921705}
+  - FaceIndex: 1741
+    LandmarkIndex: 173
+    Barycentric: {x: 0.45996204, y: 1.8312507e-15, z: 0.54003793}
+  - FaceIndex: 6772
+    LandmarkIndex: 246
+    Barycentric: {x: 9.547918e-15, y: 0.11743644, z: 0.88256353}
+  - FaceIndex: 6108
+    LandmarkIndex: 168
+    Barycentric: {x: 0.0006125303, y: 0.4780643, z: 0.52132314}
+  - FaceIndex: 211
+    LandmarkIndex: 6
+    Barycentric: {x: 0.8947143, y: 0.003235367, z: 0.10205033}
+  - FaceIndex: 5990
+    LandmarkIndex: 197
+    Barycentric: {x: 0.0029413453, y: 0.055116385, z: 0.9419423}
+  - FaceIndex: 3742
+    LandmarkIndex: 195
+    Barycentric: {x: 0.001861578, y: 0.44118008, z: 0.5569583}
+  - FaceIndex: 2057
+    LandmarkIndex: 5
+    Barycentric: {x: 0.00039522815, y: 0.9172944, z: 0.08231038}
+  - FaceIndex: 6110
+    LandmarkIndex: 4
+    Barycentric: {x: 0.8387162, y: 0.1607341, z: 0.00054967625}
+  - FaceIndex: 7798
+    LandmarkIndex: 129
+    Barycentric: {x: 0.66120046, y: 0.29795, z: 0.04084951}
+  - FaceIndex: 7338
+    LandmarkIndex: 98
+    Barycentric: {x: 0.49788535, y: 0.4889098, z: 0.013204823}
+  - FaceIndex: 2276
+    LandmarkIndex: 97
+    Barycentric: {x: 0.5890104, y: 0.31907716, z: 0.09191243}
+  - FaceIndex: 8803
+    LandmarkIndex: 2
+    Barycentric: {x: 0.000062748964, y: 0.7824051, z: 0.21753219}
+  - FaceIndex: 830
+    LandmarkIndex: 326
+    Barycentric: {x: 0.31907716, y: 0.5890104, z: 0.09191243}
+  - FaceIndex: 3525
+    LandmarkIndex: 327
+    Barycentric: {x: 0.49788535, y: 0.013204823, z: 0.4889098}
+  - FaceIndex: 6277
+    LandmarkIndex: 358
+    Barycentric: {x: 0.04084951, y: 0.29795, z: 0.66120046}
+  - FaceIndex: 393
+    LandmarkIndex: 0
+    Barycentric: {x: 0.0000045538372, y: 0.50952375, z: 0.4904717}
+  - FaceIndex: 5608
+    LandmarkIndex: 13
+    Barycentric: {x: 0.000000090527266, y: 0.7311359, z: 0.26886404}
+  - FaceIndex: 5555
+    LandmarkIndex: 14
+    Barycentric: {x: 0.000000043056072, y: 0.9709041, z: 0.029095847}
+  - FaceIndex: 8804
+    LandmarkIndex: 17
+    Barycentric: {x: 0.22162947, y: 0.77836627, z: 0.0000042477604}
+  - FaceIndex: 2291
+    LandmarkIndex: 37
+    Barycentric: {x: 0.46605843, y: 0.20110177, z: 0.3328398}
+  - FaceIndex: 2294
+    LandmarkIndex: 39
+    Barycentric: {x: 0.050246473, y: 0.7572588, z: 0.19249475}
+  - FaceIndex: 7410
+    LandmarkIndex: 40
+    Barycentric: {x: 0.13671286, y: 0.5486515, z: 0.31463563}
+  - FaceIndex: 7371
+    LandmarkIndex: 61
+    Barycentric: {x: 0.21190998, y: 0.75601, z: 0.03208002}
+  - FaceIndex: 7368
+    LandmarkIndex: 78
+    Barycentric: {x: 0.017256271, y: 0.5559948, z: 0.4267489}
+  - FaceIndex: 2329
+    LandmarkIndex: 80
+    Barycentric: {x: 0.59903276, y: 0.29482585, z: 0.10614139}
+  - FaceIndex: 7414
+    LandmarkIndex: 81
+    Barycentric: {x: 0.7946734, y: 0.026640465, z: 0.17868613}
+  - FaceIndex: 7415
+    LandmarkIndex: 82
+    Barycentric: {x: 0.006667317, y: 0.052403327, z: 0.94092935}
+  - FaceIndex: 7514
+    LandmarkIndex: 84
+    Barycentric: {x: 0.07941758, y: 0.09036631, z: 0.8302161}
+  - FaceIndex: 2431
+    LandmarkIndex: 87
+    Barycentric: {x: 0.7890821, y: 0.07378082, z: 0.13713707}
+  - FaceIndex: 2381
+    LandmarkIndex: 88
+    Barycentric: {x: 0.49235806, y: 0.14182365, z: 0.3658183}
+  - FaceIndex: 2384
+    LandmarkIndex: 91
+    Barycentric: {x: 0.27132887, y: 0.3778455, z: 0.35082564}
+  - FaceIndex: 2378
+    LandmarkIndex: 95
+    Barycentric: {x: 0.4238102, y: 0.25471842, z: 0.3214714}
+  - FaceIndex: 2369
+    LandmarkIndex: 146
+    Barycentric: {x: 0.0034726202, y: 0.34684145, z: 0.6496859}
+  - FaceIndex: 2436
+    LandmarkIndex: 178
+    Barycentric: {x: 0.6215407, y: 0.24813104, z: 0.13032824}
+  - FaceIndex: 2389
+    LandmarkIndex: 181
+    Barycentric: {x: 0.5781021, y: 0.24882118, z: 0.17307672}
+  - FaceIndex: 2311
+    LandmarkIndex: 185
+    Barycentric: {x: 0.03257371, y: 0.004487379, z: 0.9629389}
+  - FaceIndex: 2346
+    LandmarkIndex: 191
+    Barycentric: {x: 0.21624365, y: 0.4300533, z: 0.35370305}
+  - FaceIndex: 5934
+    LandmarkIndex: 267
+    Barycentric: {x: 0.46605843, y: 0.3328398, z: 0.20110177}
+  - FaceIndex: 1065
+    LandmarkIndex: 269
+    Barycentric: {x: 0.7572588, y: 0.050246473, z: 0.19249475}
+  - FaceIndex: 3426
+    LandmarkIndex: 270
+    Barycentric: {x: 0.13671286, y: 0.31463563, z: 0.5486515}
+  - FaceIndex: 863
+    LandmarkIndex: 291
+    Barycentric: {x: 0.21190998, y: 0.03208002, z: 0.75601}
+  - FaceIndex: 8590
+    LandmarkIndex: 308
+    Barycentric: {x: 0.4267489, y: 0.5559948, z: 0.017256271}
+  - FaceIndex: 5974
+    LandmarkIndex: 310
+    Barycentric: {x: 0.59903276, y: 0.10614139, z: 0.29482585}
+  - FaceIndex: 3428
+    LandmarkIndex: 311
+    Barycentric: {x: 0.7946734, y: 0.17868613, z: 0.026640465}
+  - FaceIndex: 912
+    LandmarkIndex: 312
+    Barycentric: {x: 0.006667317, y: 0.94092935, z: 0.052403327}
+  - FaceIndex: 985
+    LandmarkIndex: 314
+    Barycentric: {x: 0.07941758, y: 0.8302161, z: 0.09036631}
+  - FaceIndex: 968
+    LandmarkIndex: 317
+    Barycentric: {x: 0.07378082, y: 0.7890821, z: 0.13713707}
+  - FaceIndex: 935
+    LandmarkIndex: 318
+    Barycentric: {x: 0.14182365, y: 0.49235806, z: 0.3658183}
+  - FaceIndex: 942
+    LandmarkIndex: 321
+    Barycentric: {x: 0.3778455, y: 0.27132887, z: 0.35082564}
+  - FaceIndex: 6015
+    LandmarkIndex: 324
+    Barycentric: {x: 0.4238102, y: 0.3214714, z: 0.25471842}
+  - FaceIndex: 924
+    LandmarkIndex: 375
+    Barycentric: {x: 0.34684145, y: 0.0034726202, z: 0.6496859}
+  - FaceIndex: 971
+    LandmarkIndex: 402
+    Barycentric: {x: 0.24813104, y: 0.6215407, z: 0.13032824}
+  - FaceIndex: 944
+    LandmarkIndex: 405
+    Barycentric: {x: 0.24882118, y: 0.5781021, z: 0.17307672}
+  - FaceIndex: 6180
+    LandmarkIndex: 409
+    Barycentric: {x: 0.03257371, y: 0.9629389, z: 0.004487379}
+  - FaceIndex: 8521
+    LandmarkIndex: 415
+    Barycentric: {x: 0.21624365, y: 0.35370305, z: 0.4300533}

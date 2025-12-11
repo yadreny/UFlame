@@ -394,7 +394,7 @@ GameObject:
   - component: {fileID: 712382799}
   - component: {fileID: 712382798}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Generator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -420,7 +420,7 @@ MonoBehaviour:
     numShape: 300
     numExpr: 100
     shapeCoeffs:
-    - -1.79
+    - -0.49
     - 0
     - 0
     - 0
@@ -965,7 +965,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: be3473300bd2f704386625d8cd3d7354, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.704
+      value: 0.88
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: be3473300bd2f704386625d8cd3d7354, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1003,6 +1003,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7635826562936255635, guid: be3473300bd2f704386625d8cd3d7354, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e01051f05920fcd4ba861fec0da7541c, type: 2}
     - target: {fileID: 919132149155446097, guid: be3473300bd2f704386625d8cd3d7354, type: 3}
       propertyPath: m_Name
       value: head_flame
@@ -1010,8 +1014,33 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: be3473300bd2f704386625d8cd3d7354, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1878446647}
   m_SourcePrefab: {fileID: 100100000, guid: be3473300bd2f704386625d8cd3d7354, type: 3}
+--- !u!1 &1878446646 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: be3473300bd2f704386625d8cd3d7354, type: 3}
+  m_PrefabInstance: {fileID: 1878446645}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1878446647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878446646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7849104400996a48a4a5899de20dd6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AlSo.FlameLandmarkVisualizer
+  Embedding: {fileID: 0}
+  SkinnedMesh: {fileID: 0}
+  MeshFilter: {fileID: 0}
+  GizmoColor: {r: 0, g: 1, b: 1, a: 1}
+  GizmoRadius: 0.002
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
