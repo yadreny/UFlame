@@ -1,9 +1,10 @@
-{
+﻿{
     "flame_model_path": "D:/work25/flame/FlameBridge/models/flame2023.pkl",
+    "uv_template_obj_path": "D:/work25/flame/Assets/FLAME/UV_Knower.obj",
     "num_shape": 300,
     "num_expr": 100,
     "shape_coeffs": [
-        -1.7899999618530274,
+        -0.49000000953674319,
         0.0,
         0.0,
         0.0,
@@ -406,5 +407,6 @@
         0.0,
         0.0
     ],
-    "out_obj_path": "D:/work25/flame/Assets/FLAME/Generated/head_flame.obj"
+    "out_obj_path": "D:/work25/flame/Assets/FLAME/Generated/head_flame.obj",
+    "eye_tri_indices": []
 }
