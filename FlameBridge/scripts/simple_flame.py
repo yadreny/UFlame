@@ -9,10 +9,10 @@ class SimpleFLAME:
     - reads FLAME model from .pkl or .npz
     - computes vertices from shape/expr coefficients
     - ignores pose & skinning (pose = 0)
-    - optionally loads UVs:
-      1) из самой FLAME-модели (keys: 'uv', 'vt', 'texcoords')
-      2) из внешнего OBJ-шаблона (uv_template_obj_path), если в модели нет UV
-         (UV берутся по схеме vIndex -> vtIndex из f-строк)
+    - UV support:
+      1) Если UV есть внутри FLAME-модели (uv / vt / texcoords) — используем их (per-vertex).
+      2) Если задан uv_template_obj_path — читаем UV и vt-индексы из OBJ-шаблона (per-face-vertex),
+         чтобы сохранить швы 1-в-1 как в UV_Knower.obj.
     """
 
     def __init__(self,
@@ -27,12 +27,10 @@ class SimpleFLAME:
 
         ext = os.path.splitext(flame_model_path)[1].lower()
 
-        # load .npz or .pkl
         if ext == ".npz":
             data = np.load(flame_model_path, allow_pickle=True)
         elif ext == ".pkl":
             with open(flame_model_path, "rb") as f:
-                # FLAME models are often pickled with latin1
                 data = pickle.load(f, encoding="latin1")
         else:
             raise ValueError(f"Unsupported FLAME model format: {ext}")
@@ -40,9 +38,14 @@ class SimpleFLAME:
         self.v_template = None        # [V, 3]
         shapedirs = None              # [V, 3, N]
         self.faces = None             # [F, 3] (int)
+
+        # per-vertex UV (если вдруг есть в модели)
         self.uvs = None               # [V, 2] or None
 
-        # --- helper: привести сырые UV к виду [V,2] ---
+        # per-face-vertex UV из OBJ-шаблона
+        self.vt_coords = None         # [VT, 2]
+        self.face_vt_indices = None   # [F, 3] (int, vt-индексы на каждый угол треугольника)
+
         def process_uv_array(raw_uv, v_count):
             if raw_uv is None:
                 return None
@@ -52,12 +55,11 @@ class SimpleFLAME:
                 print("SimpleFLAME: UVs found but not 2D array, ignore.")
                 return None
 
-            # варианты:
-            # 1) [V, 2] или [V, >=2]
+            # [V, >=2]
             if uvs.shape[0] == v_count and uvs.shape[1] >= 2:
                 return uvs[:, :2]
 
-            # 2) [2, V] или [>=2, V]
+            # [>=2, V]
             if uvs.shape[1] == v_count and uvs.shape[0] >= 2:
                 return uvs[:2, :].T
 
@@ -65,24 +67,21 @@ class SimpleFLAME:
                   f"does not match vertex count {v_count}, ignore.")
             return None
 
-        # --- разбор dict / npz ---
+        # --- dict / npz ---
         if isinstance(data, dict):
             keys = list(data.keys())
             print("SimpleFLAME: Loaded FLAME .pkl model, keys:", keys)
 
-            # v_template
             if "v_template" in data:
                 self.v_template = np.asarray(data["v_template"], dtype=np.float32)
             else:
                 raise KeyError("v_template not found in FLAME .pkl")
 
-            # shapedirs
             if "shapedirs" in data:
                 shapedirs = np.asarray(data["shapedirs"], dtype=np.float32)
             else:
                 raise KeyError("shapedirs not found in FLAME .pkl")
 
-            # faces
             if "f" in data:
                 self.faces = np.asarray(data["f"], dtype=np.int32)
             elif "faces" in data:
@@ -92,7 +91,6 @@ class SimpleFLAME:
             else:
                 raise KeyError("faces / f / triangles not found in FLAME .pkl")
 
-            # UVs (optional, внутри модели)
             raw_uv = None
             if "uv" in data:
                 raw_uv = data["uv"]
@@ -106,27 +104,21 @@ class SimpleFLAME:
 
             if raw_uv is not None:
                 self.uvs = process_uv_array(raw_uv, self.v_template.shape[0])
-            else:
-                self.uvs = None
 
         else:
-            # npz-like object
             files = list(getattr(data, "files", []))
             print("SimpleFLAME: Loaded FLAME .npz model, keys:", files)
 
-            # v_template
             if "v_template" in files:
                 self.v_template = data["v_template"].astype(np.float32)
             else:
                 raise KeyError("v_template not found in FLAME .npz")
 
-            # shapedirs
             if "shapedirs" in files:
                 shapedirs = data["shapedirs"].astype(np.float32)
             else:
                 raise KeyError("shapedirs not found in FLAME .npz")
 
-            # faces
             if "f" in files:
                 self.faces = data["f"].astype(np.int32)
             elif "faces" in files:
@@ -136,7 +128,6 @@ class SimpleFLAME:
             else:
                 raise KeyError("faces / f / triangles not found in FLAME .npz")
 
-            # UVs (optional, внутри модели)
             raw_uv = None
             if "uv" in files:
                 raw_uv = data["uv"]
@@ -150,10 +141,7 @@ class SimpleFLAME:
 
             if raw_uv is not None:
                 self.uvs = process_uv_array(raw_uv, self.v_template.shape[0])
-            else:
-                self.uvs = None
 
-        # финальные проверки по геометрии
         if self.v_template is None:
             raise RuntimeError("SimpleFLAME: v_template was not loaded.")
         if shapedirs is None:
@@ -161,7 +149,6 @@ class SimpleFLAME:
         if self.faces is None:
             raise RuntimeError("SimpleFLAME: faces were not loaded.")
 
-        # shapedirs ожидаем [V, 3, N]
         if shapedirs.ndim != 3 or shapedirs.shape[1] != 3:
             raise ValueError(
                 f"SimpleFLAME: expected shapedirs with shape [V,3,N], "
@@ -185,28 +172,33 @@ class SimpleFLAME:
         print(f"SimpleFLAME: Using first {num_shape} comps as shape, "
               f"next {num_expr} as expr.")
 
-        # если UV не нашли внутри модели — пробуем подтянуть из OBJ-шаблона
+        # Если UV внутри модели нет — пробуем подтянуть из OBJ-шаблона
         if self.uvs is None and uv_template_obj_path is not None:
             self._try_load_uv_from_template_obj(uv_template_obj_path)
 
         if self.uvs is not None:
-            print(f"SimpleFLAME: UVs loaded, shape: {self.uvs.shape}")
+            print(f"SimpleFLAME: Per-vertex UVs loaded, shape: {self.uvs.shape}")
+        elif self.vt_coords is not None and self.face_vt_indices is not None:
+            print(f"SimpleFLAME: Per-face-vertex UVs loaded from template: "
+                  f"vt={self.vt_coords.shape}, face_vt={self.face_vt_indices.shape}")
         else:
-            print("SimpleFLAME: No UVs found in FLAME model "
-                  "and no valid UVs loaded from template. "
+            print("SimpleFLAME: No UVs found in model and no valid UVs loaded from template. "
                   "OBJ will be exported without vt.")
 
-    # --- подгрузка UV из внешнего OBJ-шаблона (через f v/vt/...) ---
+    # --- Загружаем UV из OBJ-шаблона (UV_Knower.obj), сохраняем vt и vt-индексы на каждый треугольник ---
     def _try_load_uv_from_template_obj(self, obj_path):
         if not os.path.isfile(obj_path):
             print(f"SimpleFLAME: UV template OBJ not found: {obj_path}")
             return
 
+        v_count_in_model = self.v_template.shape[0]
+        f_count_in_model = self.faces.shape[0]
+
         v_positions = []
         vt_list = []
 
         try:
-            # Первый проход: собираем все v и vt (без faces)
+            # Первый проход: считаем v и vt (для инфы)
             with open(obj_path, "r", encoding="utf-8") as f:
                 for line in f:
                     line = line.strip()
@@ -236,25 +228,23 @@ class SimpleFLAME:
 
             v_count_in_obj = len(v_positions)
             vt_count = len(vt_list)
-            v_count_in_model = self.v_template.shape[0]
 
             print(f"SimpleFLAME: UV template OBJ '{obj_path}': "
                   f"v_count={v_count_in_obj}, vt_count={vt_count}")
 
             if v_count_in_obj != v_count_in_model:
                 print(
-                    f"SimpleFLAME: UV template vertex count {v_count_in_obj} "
-                    f"!= FLAME vertex count {v_count_in_model}, cannot use."
+                    f"SimpleFLAME: Warning: UV template vertex count {v_count_in_obj} "
+                    f"!= FLAME vertex count {v_count_in_model}. "
+                    f"Assuming topology is still compatible (same face order)."
                 )
-                return
 
             if vt_count == 0:
                 print("SimpleFLAME: UV template has no vt entries, cannot use.")
                 return
 
-            # Второй проход: парсим faces и накапливаем UV по вершинам через vIndex/vtIndex.
-            sum_uv = np.zeros((v_count_in_obj, 2), dtype=np.float32)
-            count_uv = np.zeros((v_count_in_obj,), dtype=np.int32)
+            # Второй проход: разбираем f-строки и собираем vt-индексы для каждого треугольника
+            face_vt_indices = []
 
             with open(obj_path, "r", encoding="utf-8") as f:
                 for line in f:
@@ -262,62 +252,55 @@ class SimpleFLAME:
                     if not line or not line.startswith("f "):
                         continue
 
-                    # Пример: f v1/vt1/vn1 v2/vt2/vn2 v3/vt3/vn3
-                    # или:    f v1/vt1 v2/vt2 v3/vt3
                     parts = line.split()[1:]
+                    vt_for_face = []
                     for p in parts:
+                        # форматы: v/vt, v/vt/vn, v//vn, v
                         tokens = p.split("/")
                         if len(tokens) < 2 or tokens[1] == "":
-                            # нет vt
-                            continue
+                            # нет vt — не подходит для UV-шаблона
+                            vt_for_face = []
+                            break
                         try:
-                            v_idx = int(tokens[0]) - 1  # OBJ 1-based
-                            vt_idx = int(tokens[1]) - 1
+                            vt_idx = int(tokens[1]) - 1  # OBJ 1-based
                         except ValueError:
-                            continue
+                            vt_for_face = []
+                            break
+                        vt_for_face.append(vt_idx)
 
-                        if 0 <= v_idx < v_count_in_obj and 0 <= vt_idx < vt_count:
-                            u, v = vt_list[vt_idx]
-                            sum_uv[v_idx, 0] += u
-                            sum_uv[v_idx, 1] += v
-                            count_uv[v_idx] += 1
+                    if len(vt_for_face) >= 3:
+                        # треугольник — берём первые три vt
+                        face_vt_indices.append(vt_for_face[:3])
 
-            # Среднее UV по каждому v.
-            uvs = np.zeros((v_count_in_obj, 2), dtype=np.float32)
-            missing = 0
-            for i in range(v_count_in_obj):
-                if count_uv[i] > 0:
-                    uvs[i, 0] = sum_uv[i, 0] / float(count_uv[i])
-                    uvs[i, 1] = sum_uv[i, 1] / float(count_uv[i])
-                else:
-                    # Вершина нигде не использована в faces с vt → UV (0,0)
-                    missing += 1
+            face_vt_indices = np.asarray(face_vt_indices, dtype=np.int32)
+            f_count_in_obj = face_vt_indices.shape[0]
 
-            if missing > 0:
-                print(f"SimpleFLAME: Warning: {missing} vertices had no UV in faces; "
-                      f"their UV set to (0,0).")
+            print(f"SimpleFLAME: UV template has {f_count_in_obj} faces with vt indices.")
 
-            self.uvs = uvs
-            print("SimpleFLAME: UVs successfully loaded from template OBJ (per-vertex from faces).")
+            if f_count_in_obj != f_count_in_model:
+                print(
+                    f"SimpleFLAME: Face count mismatch (template={f_count_in_obj}, model={f_count_in_model}), "
+                    f"cannot reliably use template UV."
+                )
+                return
+
+            self.vt_coords = np.asarray(vt_list, dtype=np.float32)
+            self.face_vt_indices = face_vt_indices
+
+            print("SimpleFLAME: Per-face-vertex UV mapping successfully loaded from template OBJ.")
 
         except Exception as ex:
             print(f"SimpleFLAME: Failed to read UV template OBJ: {ex}")
+            self.vt_coords = None
+            self.face_vt_indices = None
             return
 
     # --- вычисление вершин ---
     def compute_vertices(self,
                          shape_coeffs=None,
                          expr_coeffs=None):
-        """
-        shape_coeffs: [num_shape] or None
-        expr_coeffs:  [num_expr] or None
-
-        Returns:
-            vertices [V, 3]
-        """
         v = self.v_template.astype(np.float32).copy()
 
-        # общий вектор betas длиной num_shape_total
         betas = np.zeros((self.num_shape_total,), dtype=np.float32)
 
         if shape_coeffs is not None:
@@ -339,7 +322,6 @@ class SimpleFLAME:
             start = self.num_shape
             betas[start:start + expr_coeffs.shape[0]] = expr_coeffs
 
-        # blendshape: tensordot по оси N
         if np.any(betas != 0.0):
             blend = np.tensordot(self.shapedirs, betas, axes=[2, 0])
             v = v + blend
@@ -350,22 +332,12 @@ class SimpleFLAME:
     def export_obj(self, path,
                    shape_coeffs=None,
                    expr_coeffs=None):
-        """
-        Export OBJ with:
-        - vertices (v)
-        - optional UVs (vt) if available
-        - vertex normals (vn)
-        - faces referencing normals/uvs:
-          * если UV есть:  f v/vt/vn
-          * если UV нет:   f v//vn
-        """
         vertices = self.compute_vertices(shape_coeffs, expr_coeffs)
         faces = self.faces
 
         v_count = vertices.shape[0]
         n_accum = np.zeros((v_count, 3), dtype=np.float32)
 
-        # накапливаем нормали
         for tri in faces:
             i0, i1, i2 = int(tri[0]), int(tri[1]), int(tri[2])
             p0 = vertices[i0]
@@ -380,22 +352,36 @@ class SimpleFLAME:
             n_accum[i1] += n
             n_accum[i2] += n
 
-        # нормализация
         norms = np.linalg.norm(n_accum, axis=1, keepdims=True)
         norms[norms == 0.0] = 1.0
         n_accum /= norms
 
-        has_uv = self.uvs is not None and self.uvs.shape[0] == v_count
+        use_template_uv = (
+            self.vt_coords is not None
+            and self.face_vt_indices is not None
+            and self.face_vt_indices.shape[0] == faces.shape[0]
+        )
+
+        use_per_vertex_uv = (
+            self.uvs is not None
+            and self.uvs.shape[0] == v_count
+        )
+
+        has_uv = use_template_uv or use_per_vertex_uv
 
         os.makedirs(os.path.dirname(path), exist_ok=True)
 
         with open(path, "w", encoding="utf-8") as f:
-            # позиции
+            # позиции вершин
             for v in vertices:
                 f.write(f"v {v[0]} {v[1]} {v[2]}\n")
 
-            # UV
-            if has_uv:
+            if use_template_uv:
+                # Пишем vt из OBJ-шаблона
+                for uv in self.vt_coords:
+                    f.write(f"vt {uv[0]} {uv[1]}\n")
+            elif use_per_vertex_uv:
+                # Пер-вершинные UV (если вдруг есть в самой модели)
                 for uv in self.uvs:
                     f.write(f"vt {uv[0]} {uv[1]}\n")
 
@@ -403,17 +389,36 @@ class SimpleFLAME:
             for n in n_accum:
                 f.write(f"vn {n[0]} {n[1]} {n[2]}\n")
 
-            # индексы
-            for tri in faces:
-                i0, i1, i2 = int(tri[0]) + 1, int(tri[1]) + 1, int(tri[2]) + 1
-                if has_uv:
-                    # v/vt/vn
+            if use_template_uv:
+                # f v/vt/vn, где vt берём из face_vt_indices,
+                # v и vn — из FLAME (один индекс на вершину/нормаль).
+                for face_idx, tri in enumerate(faces):
+                    i0 = int(tri[0]) + 1
+                    i1 = int(tri[1]) + 1
+                    i2 = int(tri[2]) + 1
+
+                    vt0 = int(self.face_vt_indices[face_idx, 0]) + 1
+                    vt1 = int(self.face_vt_indices[face_idx, 1]) + 1
+                    vt2 = int(self.face_vt_indices[face_idx, 2]) + 1
+
+                    f.write(f"f {i0}/{vt0}/{i0} {i1}/{vt1}/{i1} {i2}/{vt2}/{i2}\n")
+
+            elif use_per_vertex_uv:
+                # старый режим: один uv на вершину
+                for tri in faces:
+                    i0 = int(tri[0]) + 1
+                    i1 = int(tri[1]) + 1
+                    i2 = int(tri[2]) + 1
                     f.write(f"f {i0}/{i0}/{i0} {i1}/{i1}/{i1} {i2}/{i2}/{i2}\n")
-                else:
-                    # v//vn
+            else:
+                # без UV: f v//vn
+                for tri in faces:
+                    i0 = int(tri[0]) + 1
+                    i1 = int(tri[1]) + 1
+                    i2 = int(tri[2]) + 1
                     f.write(f"f {i0}//{i0} {i1}//{i1} {i2}//{i2}\n")
 
-        print(f"SimpleFLAME: Saved OBJ to: {path} (has_uv={has_uv})")
+        print(f"SimpleFLAME: Saved OBJ to: {path} (has_uv={has_uv}, "
+              f"template_uv={use_template_uv}, per_vertex_uv={use_per_vertex_uv})")
         if not has_uv:
-            print("SimpleFLAME: OBJ exported without UVs because none were found "
-                  "in model or valid template.")
+            print("SimpleFLAME: OBJ exported without UVs because none were found in model or template.")

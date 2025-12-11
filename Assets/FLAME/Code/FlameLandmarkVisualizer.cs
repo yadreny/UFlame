@@ -1,10 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEngine;
 
 namespace AlSo
 {
-    /// <summary>
-    /// Вешается на голову (SkinnedMeshRenderer или MeshFilter), умеет отображать лендмарки гизмами.
-    /// </summary>
+
     [ExecuteAlways]
     public class FlameLandmarkVisualizer : MonoBehaviour
     {
@@ -83,7 +88,6 @@ namespace AlSo
 
                 if (lm.FaceIndex < 0 || lm.FaceIndex >= faceCount)
                 {
-                    // некорректный индекс треугольника
                     continue;
                 }
 
@@ -104,10 +108,8 @@ namespace AlSo
                 Vector3 v2 = vertices[i2];
 
                 Vector3 b = lm.Barycentric;
-                float bw = 1.0f - b.x - b.y;
-
-                // barycentric: L = b.x * v0 + b.y * v1 + bw * v2
-                Vector3 localPos = b.x * v0 + b.y * v1 + bw * v2;
+                // ВАЖНО: используем ВСЕ ТРИ веса как есть.
+                Vector3 localPos = b.x * v0 + b.y * v1 + b.z * v2;
                 Vector3 worldPos = meshTransform.TransformPoint(localPos);
 
                 Gizmos.DrawSphere(worldPos, GizmoRadius);
@@ -115,4 +117,3 @@ namespace AlSo
         }
     }
 }
-
